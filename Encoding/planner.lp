@@ -1,6 +1,6 @@
 #include <incmode>.
 %% Generate
-program base.
+#program base.
 direction (X ,Y ) :- X = -1..1 , Y = -1..1 , |X+ Y |=1.
 at(X,Y,0) :- robot(X,Y).
 robot_path(robot(X,Y),0) :- robot(X,Y).

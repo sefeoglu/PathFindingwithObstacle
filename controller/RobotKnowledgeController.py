@@ -29,37 +29,44 @@ class RobotKnowledgeController:
         self.robotKnowledgeObject.robotField.append(self.realEnvironment.robot[0])
         robotNeighbour = self.findNeighbour(self.robotKnowledgeObject.robot[0]) 
         self.robotKnowledgeObject.robotField += robotNeighbour
-
+        
+        for neighbour in robotNeighbour:
+            if self.realEnvironment.blocked.count(neighbour) != 0:
+                self.robotKnowledgeObject.robotObstacle.append(neighbour)
+        
         newNeighbour = []
-        while len(self.realEnvironment.field) != len(self.robotKnowledgeObject.robotField):
+         
+        while self.realEnvironment.goal != self.robotKnowledgeObject.robotgoal:
+            
             for neighbour in robotNeighbour:
-                 
-                if  self.realEnvironment.blocked  != neighbour:
-                     
-                    self.addNewFrontier(self.robotKnowledgeObject.robot[0],neighbour)
+                
+                if all(elem in self.realEnvironment.blocked for elem in robotNeighbour):
+                    
+                   return
 
-                   
-                    if len(self.frontier) > 0:
-                       
+                if  self.realEnvironment.blocked.count(neighbour) == 0:
+                    self.addNewFrontier(self.robotKnowledgeObject.robot[0],neighbour)
+                    
+                    if len(self.frontier) > 0:  
                         robotKnowledge = self.knowledgetoString("robot", self.robotKnowledgeObject.robot)
-                        robotKnowledge += self.knowledgetoString("field", robotNeighbour)
-                        robotKnowledge += self.knowledgetoString("field", self.robotKnowledgeObject.robot)
+                        robotKnowledge += self.knowledgetoString("field",self.robotKnowledgeObject.robotField)
                         if len(self.robotKnowledgeObject.robotObstacle) > 0 :
                              robotKnowledge += self.knowledgetoString("obstacle", self.robotKnowledgeObject.robotObstacle)
-                        for goal in self.frontier:
                             
-                            if newNeighbour.count(goal)== 0:
+                        for goal in self.frontier:
+                           
+                            if newNeighbour.count(goal)== 0 and self.robotKnowledgeObject.robotObstacle.count(goal) == 0 and self.robotKnowledgeObject.robotgoal.count(goal) == 0 and self.robotKnowledgeObject.robotField.count(goal) == 0:
+            
                                 newNeighbour.append(goal)
                                 goalstr= self.knowledgetoString("goal", [goal])
-    
                                 robotKnowledge += self.knowledgetoString("field", [goal])
                                 robotKnowledge += goalstr
+                                
                                 self.robotKnowledgeObject.addKnowledge(robotKnowledge)
-                            
+                                
                                 solverObject = Solver.Solver()
                                 solverObject.solver()
-                            
-    
+
                                 if self.robotKnowledgeObject.robotField.count(goal) == 0:
                                     if len(solverObject.solution)!=0:
                                         self.robotKnowledgeObject.robotField.append(goal)
@@ -67,14 +74,23 @@ class RobotKnowledgeController:
                                             self.robotKnowledgeObject.robotObstacle.append(goal)
                                             obstaclestr = self.knowledgetoString("obstacle",[goal])
                                             robotKnowledge = robotKnowledge.replace(goalstr,obstaclestr)
-
                                         if self.realEnvironment.goal.count(goal) != 0:
                                             self.robotKnowledgeObject.robotgoal.append(goal)
+                                            
                                         if self.realEnvironment.goal.count(goal) == 0 and  self.realEnvironment.blocked.count(goal) == 0:
                                             robotKnowledge = robotKnowledge.replace(goalstr,"")
+                                if self.realEnvironment.goal != self.robotKnowledgeObject.robotgoal:
+                                    break
+                                 
         
             robotNeighbour= []
             robotNeighbour = newNeighbour
+                                
+        robotKnowledge = self.knowledgetoString("robot", self.robotKnowledgeObject.robot)
+        robotKnowledge += self.knowledgetoString("field",self.robotKnowledgeObject.robotField)
+        robotKnowledge += self.knowledgetoString("obstacle", self.robotKnowledgeObject.robotObstacle) 
+        robotKnowledge += self.knowledgetoString("goal", self.robotKnowledgeObject.robotgoal) 
+        self.robotKnowledgeObject.addKnowledge(robotKnowledge)
         solverObject = Solver.Solver()
         solverObject.solver()
         print(solverObject.solution)

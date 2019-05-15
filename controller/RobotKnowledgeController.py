@@ -125,6 +125,3 @@ class RobotKnowledgeController:
                                                         temporary_goalstr)
             if self.real_environment.goal == self.robot_knowledge_object.robotgoal:
                 break
-
-my_app = RobotKnowledgeController()
-my_app.explore_environment()

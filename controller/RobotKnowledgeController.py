@@ -40,9 +40,13 @@ class RobotKnowledgeController:
                                                              robot_knowledge_object.
                                                              robotField)
                     robot_knowledge += self.knowledge_string("obstacle", self.
+                                                             robot_knowledge_object.
                                                              robotObstacle)
                     for goal in self.frontier:
-                        if new_neighbour_list.count(goal) == 0 and self.robot_knowledge_object.robotObstacle.count(goal) == 0 and self.robot_knowledge_object.robotgoal.count(goal) == 0 and self.robot_knowledge_object.robotField.count(goal) == 0:
+                        if new_neighbour_list.count(goal) == 0 and \
+                        self.robot_knowledge_object.robotObstacle.count(goal) == 0 and \
+                        self.robot_knowledge_object.robotgoal.count(goal) == 0 and \
+                        self.robot_knowledge_object.robotField.count(goal) == 0:
                             new_neighbour_list.append(goal)
                             temporary_goalstr = self.knowledge_string("goal", [goal])
                             robot_knowledge += self.knowledge_string("field", [goal])
@@ -50,17 +54,20 @@ class RobotKnowledgeController:
                             self.robot_knowledge_object.addKnowledge(robot_knowledge)
                             solver_object = Solver.Solver()
                             solver_object.solver()
-                            print(solver_object.solution)
-                            if self.robot_knowledge_object.robotField.count(goal) == 0 and solver_object.solution.__len__() != 0:
+                            if self.robot_knowledge_object.robotField.count(goal) == 0 and \
+                            solver_object.solution.__len__() != 0:
                                 self.robot_knowledge_object.robotField.append(goal)
-                                robot_knowledge = self.replace_goal(robot_knowledge, goal, temporary_goalstr)
+                                robot_knowledge = self.replace_goal(robot_knowledge,
+                                                                    goal,
+                                                                    temporary_goalstr)
                         if self.real_environment.goal == self.robot_knowledge_object.robotgoal:
                             break
             robot_neighbour_list = []
             robot_neighbour_list = new_neighbour_list
         robot_knowledge = self.knowledge_string("robot", self.robot_knowledge_object.robot)
         robot_knowledge += self.knowledge_string("field", self.robot_knowledge_object.robotField)
-        robot_knowledge += self.knowledge_string("obstacle", self.robot_knowledge_object.robotObstacle)
+        robot_knowledge += self.knowledge_string("obstacle", self.
+                                                 robot_knowledge_object.robotObstacle)
         robot_knowledge += self.knowledge_string("goal", self.robot_knowledge_object.robotgoal)
         self.robot_knowledge_object.addKnowledge(robot_knowledge)
         solver_object = Solver.Solver()
@@ -69,13 +76,19 @@ class RobotKnowledgeController:
     def add_new_frontier(self, robot_position, neighbour_position):
         """Find the nodes for exploring"""
         self.frontier = []
-        if neighbour_position[0]-1 > 0 and (robot_position[0] != neighbour_position[0]-1 or robot_position[1] != neighbour_position[1]):
+        if neighbour_position[0]-1 > 0 and (robot_position[0] != neighbour_position[0]-1 or \
+                             robot_position[1] != neighbour_position[1]):
             self.frontier.append((neighbour_position[0]-1, neighbour_position[1]))
-        if neighbour_position[0]+1 <= self.robot_knowledge_object.dimension and (robot_position[0] != neighbour_position[0]+1 or robot_position[1] != neighbour_position[1]):
+        if neighbour_position[0]+1 <= self.robot_knowledge_object.dimension and \
+        (robot_position[0] != neighbour_position[0]+1 or \
+         robot_position[1] != neighbour_position[1]):
             self.frontier.append((neighbour_position[0]+1, neighbour_position[1]))
-        if neighbour_position[1]-1 > 0 and (robot_position[0] != neighbour_position[0] or robot_position[1] != neighbour_position[1]-1):
+        if neighbour_position[1]-1 > 0 and (robot_position[0] != neighbour_position[0] or \
+                             robot_position[1] != neighbour_position[1]-1):
             self.frontier.append((neighbour_position[0], neighbour_position[1]-1))
-        if neighbour_position[1]+1 <= self.robot_knowledge_object.dimension and (robot_position[0] != neighbour_position[0] or robot_position[1] != neighbour_position[1]+1):
+        if neighbour_position[1]+1 <= self.robot_knowledge_object.dimension and \
+        (robot_position[0] != neighbour_position[0] or \
+         robot_position[1] != neighbour_position[1]+1):
             self.frontier.append((neighbour_position[0], neighbour_position[1]+1))
     def find_neighbour(self, robot_position):
         """Find neighbour of robot"""
@@ -104,6 +117,8 @@ class RobotKnowledgeController:
                                                       obstaclestr)
         if self.real_environment.goal.count(goal) != 0:
             self.robot_knowledge_object.robotgoal.append(goal)
-        if self.real_environment.goal.count(goal) == 0 and  self.real_environment.blocked.count(goal) == 0:
+        if self.real_environment.goal.count(goal) == 0 and  \
+        self.real_environment.blocked.count(goal) == 0:
             robot_knowledge = robot_knowledge.replace(temporary_goalstr, "")
         return robot_knowledge
+    

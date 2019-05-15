@@ -42,26 +42,8 @@ class RobotKnowledgeController:
                     robot_knowledge += self.knowledge_string("obstacle", self.
                                                              robot_knowledge_object.
                                                              robotObstacle)
-                    for goal in self.frontier:
-                        if new_neighbour_list.count(goal) == 0 and \
-                        self.robot_knowledge_object.robotObstacle.count(goal) == 0 and \
-                        self.robot_knowledge_object.robotgoal.count(goal) == 0 and \
-                        self.robot_knowledge_object.robotField.count(goal) == 0:
-                            new_neighbour_list.append(goal)
-                            temporary_goalstr = self.knowledge_string("goal", [goal])
-                            robot_knowledge += self.knowledge_string("field", [goal])
-                            robot_knowledge += temporary_goalstr
-                            self.robot_knowledge_object.addKnowledge(robot_knowledge)
-                            solver_object = Solver.Solver()
-                            solver_object.solver()
-                            if self.robot_knowledge_object.robotField.count(goal) == 0 and \
-                            solver_object.solution.__len__() != 0:
-                                self.robot_knowledge_object.robotField.append(goal)
-                                robot_knowledge = self.replace_goal(robot_knowledge,
-                                                                    goal,
-                                                                    temporary_goalstr)
-                        if self.real_environment.goal == self.robot_knowledge_object.robotgoal:
-                            break
+                    self.explore_frontierlist(robot_knowledge, new_neighbour_list)
+
             robot_neighbour_list = []
             robot_neighbour_list = new_neighbour_list
         robot_knowledge = self.knowledge_string("robot", self.robot_knowledge_object.robot)
@@ -121,4 +103,28 @@ class RobotKnowledgeController:
         self.real_environment.blocked.count(goal) == 0:
             robot_knowledge = robot_knowledge.replace(temporary_goalstr, "")
         return robot_knowledge
-    
+    def explore_frontierlist(self, robot_knowledge, new_neighbour_list):
+        """Explore"""
+        for goal in self.frontier:
+            if new_neighbour_list.count(goal) == 0 and \
+            self.robot_knowledge_object.robotObstacle.count(goal) == 0 and \
+            self.robot_knowledge_object.robotgoal.count(goal) == 0 and \
+            self.robot_knowledge_object.robotField.count(goal) == 0:
+                new_neighbour_list.append(goal)
+                temporary_goalstr = self.knowledge_string("goal", [goal])
+                robot_knowledge += self.knowledge_string("field", [goal])
+                robot_knowledge += temporary_goalstr
+                self.robot_knowledge_object.addKnowledge(robot_knowledge)
+                solver_object = Solver.Solver()
+                solver_object.solver()
+                if self.robot_knowledge_object.robotField.count(goal) == 0 and \
+                solver_object.solution.__len__() != 0:
+                    self.robot_knowledge_object.robotField.append(goal)
+                    robot_knowledge = self.replace_goal(robot_knowledge,
+                                                        goal,
+                                                        temporary_goalstr)
+            if self.real_environment.goal == self.robot_knowledge_object.robotgoal:
+                break
+
+my_app = RobotKnowledgeController()
+my_app.explore_environment()

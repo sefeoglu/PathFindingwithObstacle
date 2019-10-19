@@ -4,7 +4,7 @@ PathFinding Problem with Obstacle Avoidance
 
 
  ## Definition of the Problem
- The path finding problem with obstacle avoidance is  that a robot aim to access to the goal area, avoding obstacles which are defined as blocks in the known and static environment. 
+ The path finding problem with obstacle avoidance is  that a robot aims to access to the goal area, avoding obstacles which are defined as blocks in the known and static environment. 
 
  This is defined as path finding problem with obstacle avoidance.
 
